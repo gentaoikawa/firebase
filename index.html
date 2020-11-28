@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Chatアプリ</title>
+  <style>
+    /* この中にcssをかけます */
+  </style>
+</head>
+
+<body>
+  <!-- ブラウザの画面に見える内容 -->
+
+  <div>
+    <!-- 名前 -->
+    名前
+    <input type="text" id="username">
+  </div>
+
+  <div>
+    <!-- テキストエリア -->
+    テキスト
+    <textarea name="" id="text" cols="30" rows="10"></textarea>
+  </div>
+
+  <div>
+    <!-- 送信ボタン -->
+    <button id="send">送信</button>
+   
+  </div>
+  <div>
+      <button id="sakuzyo">削除</button>
+  <!-- <buuton id ="sakuzyo">削除</buuton> -->
+</div>
+  <div>
+    　　　　　　　　<button id="login">Login</button>
+    　　　　　　　　<button id="logout" class="hidden">Logout</button>
+  </div>
+    <div>
+    <button id="messages">upload</button>
+    </div>
+
+  <div>
+    <!-- 保存されたデータが表示される箇所 -->
+    <div id="output"></div>
+  </div>　　　　
+
+  <!--/ ブラウザの画面に見える内容 -->
+
+  <!-- JQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <!--** 以下Firebase **-->
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <!-- ここにfirebaseのscriptを貼り付ける -->
+  <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyDG-pVdhIxgbg0GpEi1oBEz4hJDQwN77S4",
+      authDomain: "dev18-chat01-9af84.firebaseapp.com",
+      databaseURL: "https://dev18-chat01-9af84.firebaseio.com",
+      projectId: "dev18-chat01-9af84",
+      storageBucket: "dev18-chat01-9af84.appspot.com",
+      messagingSenderId: "1019166398891",
+      appId: "1:1019166398891:web:4aa42873d831bbd0379aee"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+
+
+
+
+  
+    //firebaseのデーターベース（保存させる場所）を使いますよと言うjsのコードを貼り付ける
+    // xxxxxスクリプトを貼り付ける
+
+    const newPostRef = firebase.database().ref();
+    const database =firebase.database();
+
+
+    // ここから下にjqueryの処理を書いて練習します
+    // 送信ボタンをクリックされたら次の処理をする
+    $("#send").on("click", function () {
+
+      // データを登録で送る
+      newPostRef.push({
+        //名前
+        username:$("#username").val(),
+        text:$("#text").val(),
+        //テキストエリア
+
+      })
+      // 文字を空にする
+      $("#username").val(""); //空にする
+      $("#text").val(""); //空にする
+
+
+
+    
+    });
+
+
+    
+
+    // $("#send").on("click", function () {
+    //   // データを登録で送る
+    //   newPostRef.push({
+    //     username: $("#username").val(), //名前
+    //     text: $("#text").val(), //テキストエリア
+    //   })
+    //   $("#text").val(""); //空にする
+    //   $("#username").val(""); //空にする
+    // });
+
+
+
+
+    // 受信処理
+    newPostRef.on("child_added", function (data) {//Firebaseの受信処理はchild_addedしかない
+      // debugger;
+      //ここに保存されたデータが全て入ってくる
+      let v =data.val();
+      let k =data.key;
+
+      // function (data)のdataにfirebaseのデータが入ってくる
+
+      // let k = data.key; //今回は使いません
+
+      //console.logで受信=firebaseに登録されている中身を確認しよう！
+
+      //テンプレートリテラル `` を活用して変数にhtmlを埋め込もう！ 
+      let str = `<p>${v.username}<br>${v.text}</p>`;
+
+      // ここでデータをhtmlに埋め込む prependには変数を埋め込もう！
+      $("#output").prepend(str);
+
+      
+    });
+
+    $("#text").on("keydown",function(event){
+  console.log(event);
+
+
+})
+   
+
+$("#sakuzyo").on("click",function(){
+
+        database.ref('-MMjI3H9HQTYc-5asdWB').child('text').remove();
+        // database.ref('-MMjFO5gJE8UrHAtWoLz').child('text').remove();
+        // newPostRef.remove();
+        $("#output").remove();
+
+      });
+      //   data.remove();
+      //   data.clear();
+      // $("#output").empty();
+
+   
+    // newPostRef.on("child_added", function (data){
+    //   data.remove();
+    //   $("#output").empty();
+    // })
+
+
+
+// loginインスタンスを定義
+const login = document.getElementById('login');
+
+// logoutインスタンスを定義
+const logout = document.getElementById('logout');
+
+// authインスタンスを定義（使用可能に）
+const auth = firebase.auth();
+let me = null;
+
+// loginのclickイベント
+login.addEventListener('click', () => {
+// login完了
+auth.signInAnonymously();
+});
+
+// logoutのclickイベント
+logout.addEventListener('click', () => {
+auth.signOut();
+});
+
+
+  </script>
+</body>
+
+</html>
